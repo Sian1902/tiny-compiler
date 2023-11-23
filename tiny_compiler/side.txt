@@ -1,0 +1,12 @@
+int | float | string | read | write |
+repeat | until | if | else
+if | else | then | return | endl
+8)	Arithmatic_Operator: any 
+arithmetic operation (+ | - | * | / )
+12)	Datatype: set of 
+reserved keywords (int, float, string)
+
+
+ 
+
+    Idenifier, Constant
