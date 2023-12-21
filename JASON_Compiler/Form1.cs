@@ -24,7 +24,8 @@ namespace tinyCompiler
             string Code = textBox1.Text;
             tiny_Compiler.Start_Compiling(Code);
             PrintTokens();
-         //   PrintLexemes();
+            treeView1.Nodes.Add(Parser.PrintParseTree(tiny_Compiler.treeroot));
+            //   PrintLexemes();
 
             PrintErrors();
         }
@@ -58,6 +59,7 @@ namespace tinyCompiler
         {
             dataGridView1.Rows.Clear();
             textBox2.Clear();
+            treeView1.Nodes.Clear();
             tiny_Compiler.TokenStream.Clear();
             Errors.Error_List.Clear();
         }

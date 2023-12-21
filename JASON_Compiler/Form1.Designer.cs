@@ -37,6 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,10 +62,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(133, 474);
+            this.button1.Location = new System.Drawing.Point(504, 398);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(195, 55);
+            this.button1.Size = new System.Drawing.Size(136, 54);
             this.button1.TabIndex = 2;
             this.button1.Text = "Compile !";
             this.button1.UseVisualStyleBackColor = true;
@@ -81,7 +82,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(405, 358);
+            this.dataGridView1.Size = new System.Drawing.Size(304, 358);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -124,20 +125,28 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(579, 474);
+            this.button2.Location = new System.Drawing.Point(673, 401);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(160, 54);
+            this.button2.Size = new System.Drawing.Size(135, 51);
             this.button2.TabIndex = 6;
             this.button2.Text = "Clear";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(838, 36);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(418, 343);
+            this.treeView1.TabIndex = 8;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1273, 543);
+            this.Controls.Add(this.treeView1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -165,6 +174,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TreeView treeView1;
     }
 }
 
