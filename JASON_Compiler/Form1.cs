@@ -57,7 +57,9 @@ namespace tinyCompiler
         private void button2_Click(object sender, EventArgs e)
         {
             dataGridView1.Rows.Clear();
+            textBox2.Clear();
             tiny_Compiler.TokenStream.Clear();
+            Errors.Error_List.Clear();
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
