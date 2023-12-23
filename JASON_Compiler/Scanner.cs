@@ -16,7 +16,7 @@ public enum Token_Class
     Main,Int,Float,String,If,elseif,read,write,repeat,until,Else,then,Return,endl,
     Dot, Semicolon, Comma, LParanthesis, RParanthesis, EqualOp, LessThanOp,
     GreaterThanOp, NotEqualOp, PlusOp, MinusOp, MultiplyOp, DivideOp,AssignOp,
-    Idenifier, Number, StringVal,Lcurly,Rcurly,andOP,orOP,nullReturn
+    Idenifier, Number, StringVal,Lcurly,Rcurly,andOP,orOP,nullReturn,end
 }
 namespace tinyCompiler
 {
@@ -48,6 +48,7 @@ namespace tinyCompiler
             ReservedWords.Add("repeat", Token_Class.repeat);
             ReservedWords.Add("return", Token_Class.Return);
             ReservedWords.Add("endl", Token_Class.endl);
+            ReservedWords.Add("end", Token_Class.end);
 
 
             //Operators.Add(".", Token_Class.Dot);
