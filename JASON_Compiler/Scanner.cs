@@ -16,7 +16,7 @@ public enum Token_Class
     Main,Int,Float,String,If,elseif,read,write,repeat,until,Else,then,Return,endl,
     Dot, Semicolon, Comma, LParanthesis, RParanthesis, EqualOp, LessThanOp,
     GreaterThanOp, NotEqualOp, PlusOp, MinusOp, MultiplyOp, DivideOp,AssignOp,
-    Idenifier, Number, StringVal,Lcurly,Rcurly,andOP,orOP
+    Idenifier, Number, StringVal,Lcurly,Rcurly,andOP,orOP,nullReturn
 }
 namespace tinyCompiler
 {
@@ -89,14 +89,21 @@ namespace tinyCompiler
                     continue;
                 if (CurrentChar == ':' || CurrentChar == '&' || CurrentChar == '|' || CurrentChar == '<')
                 {
-
-                    switch (SourceCode[j + 1])
+                    if (j + 1 < SourceCode.Length)
                     {
-                        case '=': FindTokenClass(":="); i = j + 1; continue;
-                        case '&': FindTokenClass("&&"); i = j + 1; continue;
-                        case '|': FindTokenClass("||"); i = j + 1; continue;
-                        case '>': FindTokenClass("<>"); i = j + 1; continue;
+                        switch (SourceCode[j + 1])
+                        {
+                            case '=': FindTokenClass(":="); i = j + 1; continue;
+                            case '&': FindTokenClass("&&"); i = j + 1; continue;
+                            case '|': FindTokenClass("||"); i = j + 1; continue;
+                            case '>': FindTokenClass("<>"); i = j + 1; continue;
 
+                        }
+                    }
+                    else
+                    {
+                        FindTokenClass(CurrentChar.ToString());
+                        
                     }
                 }
                 else if (!char.IsDigit(CurrentChar) && !Operators.ContainsKey(CurrentChar.ToString()))

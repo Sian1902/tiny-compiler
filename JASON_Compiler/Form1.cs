@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,13 @@ namespace tinyCompiler
             //string Code=textBox1.Text.ToLower();
             string Code = textBox1.Text;
             tiny_Compiler.Start_Compiling(Code);
+            Code = "";
             PrintTokens();
             treeView1.Nodes.Add(Parser.PrintParseTree(tiny_Compiler.treeroot));
             //   PrintLexemes();
 
             PrintErrors();
+            tiny_Compiler.Jason_Scanner.Tokens.Clear();
         }
         void PrintTokens()
         {
@@ -60,6 +63,7 @@ namespace tinyCompiler
             dataGridView1.Rows.Clear();
             textBox2.Clear();
             treeView1.Nodes.Clear();
+            tiny_Compiler.Jason_Scanner.Tokens.Clear();
             tiny_Compiler.TokenStream.Clear();
             Errors.Error_List.Clear();
         }
