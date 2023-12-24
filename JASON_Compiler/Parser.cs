@@ -50,7 +50,15 @@ namespace tinyCompiler
         }
         Token_Class arithmaticOPS(int idx)
         {
-            Token_Class tok = TokenStream[idx].token_type;
+            Token_Class tok;
+            if (InputPointer < TokenStream.Count)
+            {
+                tok = TokenStream[idx].token_type;
+            }
+            else
+            {
+                return Token_Class.nullReturn;
+            }
             switch (tok)
             {
                 case Token_Class.PlusOp: return Token_Class.PlusOp;
@@ -62,7 +70,15 @@ namespace tinyCompiler
         }
         Token_Class conditionalOP(int idx)
         {
-            Token_Class tok = TokenStream[idx].token_type;
+            Token_Class tok;
+            if (InputPointer < TokenStream.Count)
+            {
+                tok = TokenStream[idx].token_type;
+            }
+            else
+            {
+                return Token_Class.nullReturn;
+            }
             switch (tok)
             {
                 case Token_Class.LessThanOp: return Token_Class.LessThanOp;
@@ -73,7 +89,15 @@ namespace tinyCompiler
         }
         Token_Class dataType(int idx)
         {
-            Token_Class tok = TokenStream[idx].token_type;
+            Token_Class tok;
+            if (InputPointer < TokenStream.Count)
+            {
+                tok = TokenStream[idx].token_type;
+            }
+            else
+            {
+                return Token_Class.nullReturn;
+            }
             switch (tok)
             {
                 case Token_Class.Int: return Token_Class.Int;
@@ -84,7 +108,15 @@ namespace tinyCompiler
         }
         Token_Class booleanOP(int idx)
         {
-            Token_Class tok = TokenStream[idx].token_type;
+            Token_Class tok;
+            if (InputPointer < TokenStream.Count)
+            {
+                tok = TokenStream[idx].token_type;
+            }
+            else
+            {
+                return Token_Class.nullReturn;
+            }
             switch (tok)
             {
                 case Token_Class.andOP: return Token_Class.andOP;
@@ -97,26 +129,38 @@ namespace tinyCompiler
             Node statement = new Node("Statement");
             if (InputPointer < TokenStream.Count())
             {
-                if (Token_Class.Idenifier == TokenStream[InputPointer].token_type && Token_Class.AssignOp == TokenStream[InputPointer + 1].token_type)
+                if (checkValid(InputPointer, Token_Class.Idenifier) && checkValid(InputPointer + 1, Token_Class.AssignOp))
                 {
                     statement.Children.Add(assignStatement());
                 }
                 else if (dataType(InputPointer) != Token_Class.nullReturn)
+                {
                     statement.Children.Add(declarationStatement());
-                else if (Token_Class.read == TokenStream[InputPointer].token_type)
+                }
+                else if (checkValid(InputPointer, Token_Class.read))
+                {
                     statement.Children.Add(read());
-                else if (Token_Class.write == TokenStream[InputPointer].token_type)
+                }
+                else if (checkValid(InputPointer, Token_Class.write))
+                {
                     statement.Children.Add(write());
-                else if (Token_Class.If == TokenStream[InputPointer].token_type)
+                }
+                else if (checkValid(InputPointer, Token_Class.If))
+                {
                     statement.Children.Add(ifStatement());
-                else if (Token_Class.repeat == TokenStream[InputPointer].token_type)
+                }
+                else if (checkValid(InputPointer, Token_Class.repeat))
+                {
                     statement.Children.Add(Repeat_Statement());
-                else if (Token_Class.Idenifier == TokenStream[InputPointer].token_type && Token_Class.LParanthesis == TokenStream[InputPointer + 1].token_type)
+                }
+                else if (checkValid(InputPointer, Token_Class.Idenifier) && checkValid(InputPointer+1, Token_Class.LParanthesis))
                 {
                     statement.Children.Add(functionCall());
                 }
-                else if (Token_Class.Return == TokenStream[InputPointer].token_type)
+                else if (checkValid(InputPointer, Token_Class.Return))
+                {
                     statement.Children.Add(returnStatement());
+                }
                 else InputPointer++;
             }
             return statement;
@@ -168,43 +212,52 @@ namespace tinyCompiler
         }
         Node equation()
         {
+            bool paranth=false;
             Node equation = new Node("equation");
-            Node testNode = term();
-            if (testNode.Children.Count>0)
+            if (checkValid(InputPointer, Token_Class.LParanthesis))
             {
-               equation.Children.Add(testNode); 
+                equation.Children.Add(match((Token_Class.LParanthesis)));
+                paranth=true;
             }
-            else if (checkValid(InputPointer,Token_Class.LParanthesis))
+            equation.Children.Add(term());
+            while (checkValid(InputPointer + 1, arithmaticOPS(InputPointer)))
+            {
+                equation.Children.Add(match(arithmaticOPS(InputPointer)));
+                equation.Children.Add(term());
+            }
+            if (paranth)
             {
                 equation.Children.Add(match(Token_Class.LParanthesis));
-                equation.Children.Add(match(Token_Class.Idenifier));
-                while (checkValid(InputPointer,arithmaticOPS(InputPointer)))
-                {
-                    equation.Children.Add(match(arithmaticOPS(InputPointer)));
-                    equation.Children.Add(match(Token_Class.Idenifier));
-                }
-                equation.Children.Add(match(Token_Class.RParanthesis));
             }
             return equation;
         }
         Node expression()
         {
             Node expression = new Node("expression");
-            if(checkValid(InputPointer,Token_Class.StringVal))
+            if (checkValid(InputPointer, Token_Class.StringVal))
             {
                 expression.Children.Add(match(Token_Class.StringVal));
             }
             else
             {
-                Node testNode = term();
-                if(testNode.Children.Count==0)
+
+                if (checkValid(InputPointer, Token_Class.Idenifier)||checkValid(InputPointer,Token_Class.Number))
                 {
-                    testNode=equation();
+                    if (checkValid(InputPointer + 1, arithmaticOPS(InputPointer + 1)))
+                    {
+                            expression.Children.Add(equation());
+                    }
+                    else
+                    {
+                            expression.Children.Add(term());
+                    }
                 }
-                if (testNode.Children.Count > 0)
+                else if (checkValid(InputPointer, Token_Class.LParanthesis))
                 {
-                    expression.Children.Add(testNode);
+                    expression.Children.Add(equation());
                 }
+                
+                
             }
            
             
@@ -232,17 +285,21 @@ namespace tinyCompiler
         {
             Node identifierList = new Node("identifier list");
             identifierList.Children.Add(match(Token_Class.Idenifier));
-            if (checkValid(InputPointer, Token_Class.AssignOp))
+            if (checkValid(InputPointer, Token_Class.AssignOp)||checkValid(InputPointer,Token_Class.Comma))
             {
-                identifierList.Children.Add(assignList());
+                if (checkValid(InputPointer, Token_Class.AssignOp))
+                {
+                    identifierList.Children.Add(assignList());
+                }
                 while(checkValid(InputPointer,Token_Class.Comma))
                 {
                     identifierList.Children.Add(match(Token_Class.Comma));
                     identifierList.Children.Add(match(Token_Class.Idenifier));
-                    if (checkValid(InputPointer, Token_Class.EqualOp))
+                    if (checkValid(InputPointer, Token_Class.AssignOp))
                     {
                         identifierList.Children.Add(assignList());
                     }
+
                 }
             }
             return identifierList;
@@ -325,11 +382,11 @@ namespace tinyCompiler
             }
             if (InputPointer < TokenStream.Count())
             {
-                if (Token_Class.elseif == TokenStream[InputPointer].token_type)
+                if (checkValid(InputPointer, Token_Class.elseif))
                 {
                     ifStatement.Children.Add(Else_If_Statement());
                 }
-                else if (Token_Class.Else == TokenStream[InputPointer].token_type)
+                else if (checkValid(InputPointer, Token_Class.Else))
                 {
                     ifStatement.Children.Add(Else_Statements());
                 }
@@ -355,11 +412,11 @@ namespace tinyCompiler
            
             if (InputPointer < TokenStream.Count())
             {
-                if(Token_Class.elseif == TokenStream[InputPointer].token_type)
+                if(checkValid(InputPointer, Token_Class.elseif))
                 {
                     else_if_Statement.Children.Add(Else_If_Statement());
                 }
-                else if(Token_Class.Else == TokenStream[InputPointer].token_type)
+                else if(checkValid(InputPointer, Token_Class.Else))
                 {
                     else_if_Statement.Children.Add(Else_Statements());
                 }
