@@ -315,7 +315,10 @@ namespace tinyCompiler
             ifStatement.Children.Add(match(Token_Class.If));
             ifStatement.Children.Add(conditionStatement());
             ifStatement.Children.Add(match(Token_Class.then));
-            while (TokenStream[InputPointer].token_type != Token_Class.end && TokenStream[InputPointer].token_type != Token_Class.elseif && TokenStream[InputPointer].token_type != Token_Class.Else)
+            while (InputPointer < TokenStream.Count() 
+                && (TokenStream[InputPointer].token_type != Token_Class.end 
+                && TokenStream[InputPointer].token_type != Token_Class.elseif
+                && TokenStream[InputPointer].token_type != Token_Class.Else)) //logical error hena. ashan law mafesh end,elseif,else byakod ba2ait el code ka2eno statements gowa el if.
             {
                 ifStatement.Children.Add(Statement());
 
@@ -344,7 +347,7 @@ namespace tinyCompiler
             else_if_Statement.Children.Add(match(Token_Class.elseif));
             else_if_Statement.Children.Add(conditionStatement());
             else_if_Statement.Children.Add(match(Token_Class.then));
-            while (TokenStream[InputPointer].token_type != Token_Class.end || TokenStream[InputPointer].token_type != Token_Class.elseif || TokenStream[InputPointer].token_type != Token_Class.Else)
+            while (InputPointer < TokenStream.Count() && (TokenStream[InputPointer].token_type != Token_Class.end && TokenStream[InputPointer].token_type != Token_Class.elseif && TokenStream[InputPointer].token_type != Token_Class.Else))
             {
                 else_if_Statement.Children.Add(Statement());
 
@@ -436,7 +439,7 @@ namespace tinyCompiler
         {
             Node body = new Node("Function Body");
             body.Children.Add(match(Token_Class.Lcurly));
-            while (TokenStream[InputPointer].token_type != Token_Class.Return)
+            while (InputPointer <TokenStream.Count() &&TokenStream[InputPointer].token_type != Token_Class.Return)
             {
                 body.Children.Add(Statement());
             }

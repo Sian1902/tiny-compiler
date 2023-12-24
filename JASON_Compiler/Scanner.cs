@@ -219,7 +219,10 @@ namespace tinyCompiler
                 }
 
 
-
+                if (i >= SourceCode.Length - 1)
+                {
+                    Errors.endOfCode();
+                }
             }
             void FindTokenClass(string Lex)
             {
@@ -255,8 +258,11 @@ namespace tinyCompiler
                 //Is it an operator?
                 else if (Operators.ContainsKey(Lex))
                 {
-
                     Tok.token_type = Operators[Lex];
+                    if (Lex == "(" || Lex == ")" || Lex == "[" || Lex == "]" || Lex == "{" || Lex == "}")
+                    {
+                        Errors.bracketBalance(Lex[0]);
+                    }
                 }
                 //Is it an undefined?
                 else
