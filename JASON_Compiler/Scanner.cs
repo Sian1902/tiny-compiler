@@ -100,6 +100,10 @@ namespace tinyCompiler
                             case '>': FindTokenClass("<>"); i = j + 1; continue;
 
                         }
+                        if (CurrentChar == '<')
+                        {
+                            FindTokenClass("<");
+                        }
                     }
                     else
                     {
@@ -117,12 +121,26 @@ namespace tinyCompiler
                         {
                             break;
                         }
+                       
                         CurrentChar = SourceCode[j];
+                        if (CurrentChar == ';')
+                        {
+                            j--;
+                            break;
+                        }
+                       
                         if (CurrentChar == ' ' || CurrentChar == '\r' || CurrentChar == '\n'||CurrentChar==':')
                         {
+                           
                             if (CurrentLexeme[0] == '\"' && CurrentChar == ' ')
                             {
 
+                            }
+                            
+                            else if (CurrentChar == ':')
+                            {
+                                j--;
+                                break;
                             }
                             else
                             {
@@ -210,6 +228,10 @@ namespace tinyCompiler
                         {
                             FindTokenClass(CurrentLexeme);
                         }
+                    }
+                    else
+                    {
+                        FindTokenClass(CurrentChar.ToString());
                     }
                 }
 

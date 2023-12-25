@@ -46,7 +46,7 @@ namespace tinyCompiler
         }
         bool checkValid(int idx,Token_Class tokenVal)
         {
-            return idx<TokenStream.Count&&TokenStream[InputPointer].token_type==tokenVal;
+            return idx<TokenStream.Count&&TokenStream[idx].token_type==tokenVal;
         }
         Token_Class arithmaticOPS(int idx)
         {
@@ -170,7 +170,7 @@ namespace tinyCompiler
             Node function_call = new Node("function call");
             function_call.Children.Add(match(Token_Class.Idenifier));
             function_call.Children.Add(match(Token_Class.LParanthesis));
-            if (checkValid(InputPointer,Token_Class.Idenifier))
+            if (checkValid(InputPointer,Token_Class.Idenifier)||checkValid(InputPointer,Token_Class.Number))
             {
                 function_call.Children.Add(ArgumentList());
             }
@@ -181,11 +181,11 @@ namespace tinyCompiler
          Node ArgumentList()
         {
             Node argument_list = new Node("argument list");
-            argument_list.Children.Add(match(Token_Class.Idenifier));
+            argument_list.Children.Add(expression());
             while(checkValid(InputPointer,Token_Class.Comma))
             {
                 argument_list.Children.Add(match(Token_Class.Comma));
-                argument_list.Children.Add(match(Token_Class.Idenifier));
+                argument_list.Children.Add(expression());
 
             }
             return argument_list;
@@ -220,10 +220,35 @@ namespace tinyCompiler
                 paranth=true;
             }
             equation.Children.Add(term());
-            while (checkValid(InputPointer + 1, arithmaticOPS(InputPointer)))
+            while (checkValid(InputPointer , arithmaticOPS(InputPointer)))
             {
+             
+                
                 equation.Children.Add(match(arithmaticOPS(InputPointer)));
-                equation.Children.Add(term());
+                if (checkValid(InputPointer, Token_Class.LParanthesis))
+                {
+                    equation.Children.Add(match(Token_Class.LParanthesis));
+                }
+                if (checkValid(InputPointer, Token_Class.Idenifier))
+                {
+                    if (checkValid(InputPointer + 1, Token_Class.LParanthesis))
+                    {
+                        equation.Children.Add(functionCall());
+                    }
+                    else
+                    {
+                        equation.Children.Add(term());
+                    }
+
+                }
+                else if(checkValid(InputPointer,Token_Class.Number))
+                {
+                    equation.Children.Add(term());
+                }
+                if (checkValid(InputPointer, Token_Class.RParanthesis))
+                {
+                    equation.Children.Add(match(Token_Class.RParanthesis));
+                }
             }
             if (paranth)
             {
@@ -243,7 +268,7 @@ namespace tinyCompiler
 
                 if (checkValid(InputPointer, Token_Class.Idenifier)||checkValid(InputPointer,Token_Class.Number))
                 {
-                    if (checkValid(InputPointer + 1, arithmaticOPS(InputPointer + 1)))
+                    if ((checkValid(InputPointer ,Token_Class.Idenifier)|| checkValid(InputPointer, Token_Class.Number)) &&checkValid(InputPointer+1, arithmaticOPS(InputPointer+1)))
                     {
                             expression.Children.Add(equation());
                     }
@@ -270,6 +295,7 @@ namespace tinyCompiler
             assignStatement.Children.Add(match(Token_Class.Idenifier));
             assignStatement.Children.Add(match(Token_Class.AssignOp));
             assignStatement.Children.Add(expression());
+            assignStatement.Children.Add(match(Token_Class.Semicolon));
             return assignStatement;
         }
         Node declarationStatement()
@@ -349,9 +375,13 @@ namespace tinyCompiler
             return returnStatement;
         }
         Node condition()
-        {
+         {
             Node condition = new Node("condition");
-            condition.Children.Add(match(Token_Class.Idenifier));
+            if (checkValid(InputPointer, Token_Class.Idenifier))
+            {
+                condition.Children.Add(match(Token_Class.Idenifier));
+            }
+
             condition.Children.Add(match(conditionalOP(InputPointer)));
             condition.Children.Add(term());
             return condition;
@@ -553,7 +583,7 @@ namespace tinyCompiler
             else
             {
                 Errors.Error_List.Add("Parsing Error: Expected "
-                        + ExpectedToken.ToString() + "\r\n");
+                        + ExpectedToken.ToString() +  "\r\n");
                 InputPointer++;
                 return null;
             }
