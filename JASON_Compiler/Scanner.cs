@@ -16,7 +16,7 @@ public enum Token_Class
     Main,Int,Float,String,If,elseif,read,write,repeat,until,Else,then,Return,endl,
     Dot, Semicolon, Comma, LParanthesis, RParanthesis, EqualOp, LessThanOp,
     GreaterThanOp, NotEqualOp, PlusOp, MinusOp, MultiplyOp, DivideOp,AssignOp,
-    Idenifier, Number, StringVal,Lcurly,Rcurly,andOP,orOP,nullReturn,end
+    Idenifier, Number, StringVal,Lcurly,Rcurly,andOP,orOP,dataType,arithmaticOP,booleanOP,conditionalOp,end
 }
 namespace tinyCompiler
 {
@@ -169,7 +169,7 @@ namespace tinyCompiler
                         {
                             break;
                         }
-                        if (Operators.ContainsKey(SourceCode[j].ToString()))
+                        if (Operators.ContainsKey(SourceCode[j].ToString()) || SourceCode[j] == '&' || SourceCode[j]=='|')
                         {
                             //j--;
                             break;
